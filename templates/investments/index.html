@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
-{% block title %}Active Investments{% endblock %}
+{% block title %}Investments{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="row">
         <div class="col">
-            <h1 class="display-5"><i class="fas fa-chart-line"></i> Active Investments</h1>
-            <p class="lead">Manage your active time investments</p>
+            <h1 class="display-5"><i class="fas fa-chart-line"></i> Investments</h1>
+            <p class="lead">Manage your time investments</p>
         </div>
         <div class="col-auto">
             <div class="btn-group" role="group">
-                <a href="{{ url_for('investment.investments') }}" class="btn btn-outline-primary">All Investments</a>
-                <a href="{{ url_for('investment.active_investments') }}" class="btn btn-outline-primary active">Active Investments</a>
+                <a href="{{ url_for('investment.investments') }}" class="btn btn-outline-primary active">All Investments</a>
+                <a href="{{ url_for('investment.active_investments') }}" class="btn btn-outline-primary">Active Investments</a>
             </div>
         </div>
     </div>
@@ -29,13 +29,12 @@
                             <th>Interest Rate</th>
                             <th>Term</th>
                             <th>Maturity Date</th>
-                            <th>Days Left</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for investment in investments %}
-                        {% set days_left = (investment.maturity_date - now).days %}
                         <tr>
                             <td>{{ investment.account.account_number }}</td>
                             <td>{{ investment.format_amount() }}</td>
@@ -43,21 +42,25 @@
                             <td>{{ investment.term_days }} days</td>
                             <td>{{ investment.maturity_date.strftime('%Y-%m-%d') }}</td>
                             <td>
-                                {% if days_left <= 0 %}
+                                {% if investment.status == 'ACTIVE' %}
+                                <span class="badge bg-primary">Active</span>
+                                {% elif investment.status == 'MATURED' %}
                                 <span class="badge bg-success">Matured</span>
-                                {% else %}
-                                {{ days_left }} day{% if days_left != 1 %}s{% endif %}
+                                {% elif investment.status == 'WITHDRAWN' %}
+                                <span class="badge bg-secondary">Withdrawn</span>
                                 {% endif %}
                             </td>
                             <td>
                                 <a href="{{ url_for('investment.investment_details', investment_id=investment.id) }}" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-info-circle"></i> Details
                                 </a>
+                                {% if investment.status == 'ACTIVE' or investment.status == 'MATURED' %}
                                 <form method="POST" action="{{ url_for('investment.withdraw_investment', investment_id=investment.id) }}" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-outline-success">
                                         <i class="fas fa-money-bill-wave"></i> Withdraw
                                     </button>
                                 </form>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
@@ -66,7 +69,7 @@
             </div>
             {% else %}
             <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> You don't have any active investments.
+                <i class="fas fa-info-circle"></i> You don't have any investments.
             </div>
             {% endif %}
         </div>
@@ -91,11 +94,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    // Add current date to template context
-    var now = new Date();
-</script>
 {% endblock %}
