@@ -117,3 +117,13 @@ cd ChronoBank
 - Session-based authentication
 - Transaction logging for all account activities
 - Role-based access (regular user, admin)
+
+![IMG1](imgs/ss1.png)
+![IMG1](imgs/ss2.png)
+![IMG1](imgs/ss3.png)
+![IMG1](imgs/ss4.png)
+![IMG1](imgs/ss5.png)
+![IMG1](imgs/ss6.png)
+![IMG1](imgs/ss7.png)
+![IMG1](imgs/ss8.png)
+![IMG1](imgs/ss9.png)
